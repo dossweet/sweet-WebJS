@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         sweet-脚本测试
+// @name         sweet-脚本测试线上版
 // @namespace    https://greasyfork.org/
 // @version      1.0
 // @description  sweet-脚本测试，自己写着玩的
