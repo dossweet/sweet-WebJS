@@ -8,7 +8,6 @@
 // @icon        https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/sweet.jpg
 // @license     MIT
 // ==/UserScript==
-
 (function() {
     'use strict';
     window.close();//关闭弹窗
