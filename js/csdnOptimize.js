@@ -1,13 +1,14 @@
 // ==UserScript==
-// @name         sweet-CSDN文章阅读优化，过滤推荐文章模块中的下载专区&&免登录陆查看所有评论
+// @name         sweet-CSDN文章阅读优化，过滤推荐文章模块中的下载专区&免登录陆查看所有评论&去广告
 // @namespace    https://greasyfork.org/zh-CN/scripts/425479
-// @version      2.0
+// @version      3.0
 // @description  csdn文章阅读界面下侧的相关文章中会有下载模块，但是一般我们只是想看文章，不想跳到相关下载，因此想写个脚本过滤掉下载模块，同时还实现免登录查看所有评论的功能，评论保留翻页功能
 // @author       sweet
 // @include      *://blog.csdn.net/*/article/details/*
 // @run-at      document-idle
 // @icon        https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/sweet.jpg
 // @license     GPL-3.0-only
+// @note        v3.0实现去广告
 // @note        v2.1完善免登录展开评论功能，评论可以自动翻页，现在不会弹登录窗口了
 // @note        v2.0实现免登录展开评论功能，评论可以自动翻页
 // @note        v1.0实现过滤下载模块功能
@@ -31,6 +32,7 @@
     'use strict';
     // 待隐藏的class名称集合
     var classNameArray = ['type_download', 'comment-list-box', 'text-center', 'd-none','login-box','login-mark'];
+    var idNameArray = ['recommendAdBox'];
 
     // 隐藏元素
     function hideEle(className) {
@@ -77,11 +79,32 @@
         }
     }
 
+    // 隐藏元素
+    function hideEleById(idName) {
+        switch (idName) {
+            case 'recommendAdBox':
+                let hideElement = document.querySelectorAll('#' + idName);
+                if (hideElement) {
+                    for (let i = 0; i < hideElement.length; i++) {
+                        hideElement[i].style.display = "none";
+                    }
+                }
+                break;
+        }
+    }
+
 
     //对于不同类的元素，写个方法来一起修正css样式
     function removeElements(classNameArray) {
-        for (var i = 0; i < classNameArray.length; i++) {//批量执行操作
+        for (let i = 0; i < classNameArray.length; i++) {//批量执行操作
             hideEle(classNameArray[i]);
+        }
+    }
+
+    //对于不同类的元素，写个方法来一起修正css样式
+    function removeElementsById(idNameArray) {
+        for (let i = 0; i < idNameArray.length; i++) {//批量执行操作
+            hideEleById(idNameArray[i]);
         }
     }
 
@@ -99,5 +122,6 @@
     }
 
     safeWaitFunc(classNameArray, removeElements);
+    safeWaitFunc(idNameArray, removeElementsById);
     printScript();
 })();
