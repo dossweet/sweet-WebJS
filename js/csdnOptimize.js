@@ -1,15 +1,15 @@
 // ==UserScript==
-// @name         sweet-CSDN文章阅读优化，过滤推荐文章模块中的下载专区&&免登陆查看所有评论
+// @name         sweet-CSDN文章阅读优化，过滤推荐文章模块中的下载专区&&免登录陆查看所有评论
 // @namespace    https://greasyfork.org/zh-CN/scripts/425479
 // @version      2.0
-// @description  csdn文章阅读界面下侧的相关文章中会有下载模块，但是一般我们只是想看文章，不想跳到相关下载，因此想写个脚本过滤掉下载模块，同时还实现免登陆查看所有评论的功能，评论保留翻页功能
+// @description  csdn文章阅读界面下侧的相关文章中会有下载模块，但是一般我们只是想看文章，不想跳到相关下载，因此想写个脚本过滤掉下载模块，同时还实现免登录查看所有评论的功能，评论保留翻页功能
 // @author       sweet
 // @include      *://blog.csdn.net/*/article/details/*
 // @run-at      document-idle
 // @icon        https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/sweet.jpg
 // @license     GPL-3.0-only
-// @note        v2.1完善免登陆展开评论功能，评论可以自动翻页，现在不会弹登录窗口了
-// @note        v2.0实现免登陆展开评论功能，评论可以自动翻页
+// @note        v2.1完善免登录展开评论功能，评论可以自动翻页，现在不会弹登录窗口了
+// @note        v2.0实现免登录展开评论功能，评论可以自动翻页
 // @note        v1.0实现过滤下载模块功能
 // @require     https://cdn.staticfile.org/vue/2.6.11/vue.min.js
 // @require     https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js
