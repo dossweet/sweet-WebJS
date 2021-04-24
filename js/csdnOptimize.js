@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         sweet-CSDN文章阅读优化，过滤推荐文章模块中的下载专区
 // @namespace    https://greasyfork.org/zh-CN/scripts/425479
-// @version      1.0
+// @version      2.0
 // @description  csdn文章阅读界面下侧的相关文章中会有下载模块，但是一般我们只是想看文章，不想跳到相关下载，因此想写个脚本过滤掉下载模块，同时还实现免登陆查看所有评论的功能，评论保留翻页功能
 // @author       sweet
 // @include      *://blog.csdn.net/*/article/details/*
