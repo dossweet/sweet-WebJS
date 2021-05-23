@@ -37,7 +37,7 @@
                 }
                 frameWindow.close();
                 def.resolve();
-            }, 250);
+            }, 3000);
         } catch (err) {
             def.reject(err);
         }
