@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>jQuery带动画效果的Tooltips插件</title>
+
+	<link rel="stylesheet" href="css/tooltipify.min.css"></link>
+	<style>
+		body{
+    background-color: #7F84B0
+}
+	</style>
+</head>
+<body>
+	<div class="container">
+		
+<!--		<div class="wrapper">-->
+<!--			<div class="default">-->
+<!--	        <h1>Demo</h1>-->
+<!--	        <div title="Tooltip for item 1">鼠标移动这里！</div>-->
+<!--		    </div>-->
+<!--		    <div class="default">-->
+<!--		        <h1>Demo 2</h1>-->
+<!--		        <input type="text" title="please fill in this input" />-->
+<!--		    </div>-->
+<!--		    <div class="left" style="margin-left: 200px;">-->
+<!--		        <h1>Demo with position set to left.</h1>-->
+<!--		        <div>-->
+<!--		            <i>(This block has a margin-left for demo purposes.)</i>-->
+<!--		        </div>-->
+<!--		        <span title="Tooltip for left">Try me!</span>-->
+<!--		    </div>-->
+<!--		    <div class="bottom">-->
+<!--		        <h1>Demo with position set to bottom</h1>-->
+<!--		        <span title="Tooltip for bottom">鼠标移动这里！</span>-->
+<!--		    </div>-->
+<!--		    <div class="right">-->
+<!--		        <h1>Demo with position set to right.</h1>-->
+<!--		        <div title="Tooltip for right" style="float:left;">鼠标移动<br /> 这里！<br /> on multiline!</div>-->
+<!--		    </div>-->
+<!--		    <div class="default">-->
+<!--		        <h1>Demo</h1>-->
+<!--		        <div title="Tooltip for item 1" style="position:absolute;">鼠标移动这里！</div>-->
+<!--		    </div>-->
+<!--	    </div>-->
+		<div class="test"style="margin-left: 100px;margin-bottom: 100px;">
+			<div title="文章转PDF">鼠标移动这里！</div>
+		</div>
+		
+	</div>
+	
+	<script src="https://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/jquery-tooltipify.min.js"></script>
+	<script type="text/javascript">
+        $(".default [title]").tooltipify();
+        $(".left [title]").tooltipify({ position: 'left' });
+        $(".right [title]").tooltipify({ position: 'right' });
+        $(".bottom [title]").tooltipify({ position: 'bottom' });
+        $(".test [title]").tooltipify({ position: 'bottom' });
+    </script>
+</body>
+</html>
