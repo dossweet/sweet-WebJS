@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         CSDN文章阅读优化，过滤相关推荐中的下载模块&免登录查看所有评论&去广告&免登录复制
 // @namespace    https://greasyfork.org/zh-CN/scripts/425479
-// @version      4.0
+// @version      5.0
 // @description  csdn文章阅读界面下侧的相关文章中会有下载模块，但是一般我们只是想看文章，不想跳到相关下载，因此想写个脚本过滤掉下载模块，同时还实现免登录查看所有评论的功能，评论保留翻页功能,页面实现去广告
 // @author       sweet
 // @include      *://blog.csdn.net/*/article/details/*
 // @run-at      document-idle
 // @icon        https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/sweet.jpg
 // @license     GPL-3.0-only
+// @note        v5.0相关推荐模块进一步优化，去除课程列表
 // @note        v4.0实现免登录复制
 // @note        v3.0实现去广告
 // @note        v2.1完善免登录展开评论功能，评论可以自动翻页，现在不会弹登录窗口了
@@ -33,7 +34,7 @@
 (function () {
     'use strict';
     // 待隐藏的class名称集合
-    var classNameArray = ['type_download', 'comment-list-box', 'text-center', 'd-none', 'login-mark'];
+    var classNameArray = ['type_download', 'comment-list-box', 'text-center', 'd-none', 'login-mark','type_course'];
     var idNameArray = ['recommendAdBox'];
     var addStyle = GM_addStyle;
     var setClipboard = GM_setClipboard;
@@ -63,6 +64,14 @@
                 break;
             case 'login-mark':
                 addStyle(".login-mark,#passportbox{display:none !important;}");
+                break;
+            case 'type_course':
+                let hideElement02 = document.querySelectorAll('.' + className);
+                if (hideElement02) {
+                    for (let i = 0; i < hideElement.length; i++) {
+                        hideElement02[i].style.display = "none";
+                    }
+                }
                 break;
         }
     }
