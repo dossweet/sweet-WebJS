@@ -16,11 +16,10 @@
 // @include      https://segmentfault.com/a/*
 // @run-at      document-idle
 // @icon        https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/sweet.jpg
-// @require     https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/resources/jquery-1.9.1.min.js
-// @require     https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/resources/jQuery.print.js
-// @require     http://www.jq22.com/jquery/jquery-migrate-1.2.1.min.js
-// @require     https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/resources/jquery-tooltipify.min.js
-// @license     GPL3.0 only
+// @require     https://cdn.staticfile.org/jquery/1.9.1/jquery.min.js
+// @require     https://cdn.jsdelivr.net/npm/jQuery.print@1.5.1/jQuery.print.min.js
+// @require     https://code.jquery.com/jquery-migrate-1.2.1.min.js
+// @license     GPL 3.0 only
 // @note        v10.0整合了是否
 // @note        v9.0整合了开源中国
 // @note        v8.0整合了掘金
@@ -54,7 +53,7 @@
         pageConfigure.parentDiv = "QuestionButtonGroup";
         pageConfigure.firstChild = "FollowButton";
         pageConfigure.ifNeedPageRedirect = true;
-        pageConfigure.currentPage = 0;//表示是知乎
+        pageConfigure.currentPage = 0;//表示是知乎的讨论页
     } else if (pageHref.indexOf("zhuanlan.zhihu.com/p") != -1) {//表示是文章页
         pageConfigure.pageHref = pageHref;
         pageConfigure.parentDiv = "ColumnPageHeader-Button";
@@ -98,8 +97,8 @@
         window.location.replace(pageConfigure.pageHref);
     }
 
-    // 关闭登录框-仅适用于知乎
-    function closeLogin() {
+    // 关闭登录框
+    function closeLogin() {//登录必须放在最前面，不然其他节点可能还没加载出来，导致js动态添加的样式不可用
         if (pageConfigure.currentPage == 0) {
             let removeLoginModal = e => {
                 if (e.target.innerHTML && e.target.getElementsByClassName('Modal-wrapper').length > 0) {
@@ -121,6 +120,7 @@
         firstChild = document.querySelector('.' + pageConfigure.firstChild);
     }
     var div = "";
+    var div46 = "";
     if (pageConfigure.currentPage == 0 || pageConfigure.currentPage == 1) {
         parentDiv = document.querySelector('.' + pageConfigure.parentDiv);
         div = document.createElement("div");
@@ -149,11 +149,15 @@
         div = document.createElement("div");
         div.innerHTML =
             '        <div class="pagePrint panel-btn">\n' +
-            '        <div title="文章转PDF">\n' +
+            '        <div class="tooltip">\n' +
             '        <img id="printLogo" src="https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/printLogo03.png">\n' +
             '        </div>\n' +
             '        </div>\n';
         div.className = "printButton";
+        div46 = document.createElement("div");
+        div46.innerHTML = '<div class="tooltip-one"></div>\n' +
+            '    <div class="tooltip-two">文章转PDF</div>';
+        div46.className = "tooltips";
     } else if (pageConfigure.currentPage == 5) {
         parentDiv = document.querySelectorAll('.' + pageConfigure.parentDiv)[1];
         div = document.createElement("div");
@@ -169,49 +173,27 @@
         div = document.createElement("div");
         div.innerHTML =
             '        <div class="pagePrint panel-btn">\n' +
-            '        <div title="文章转PDF">\n' +
+            '        <div>\n' +
             '        <img id="printLogo" src="https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/printLogo05.png">\n' +
             '        </div>\n' +
             '        </div>\n';
         div.className = "printButton";
+        div46 = document.createElement("div");
+        div46.innerHTML = '<div class="tooltip-one"></div>\n' +
+            '    <div class="tooltip-two">文章转PDF</div>';
+        div46.className = "tooltips";
     }
 
     var cssStyle = "";
     var object = "";
     var pos = "";
     var btnTop = "";
+    var tipTop = "";
     var btnLeft = "";
+    var tipLeft = "";
     var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
     var scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
-    var tooltipify = ".tooltipify {\n" +
-        "    background: #000;\n" +
-        "    border-radius: 5px;\n" +
-        "    z-index: 1000;\n" +
-        "}\n" +
-        "\n" +
-        ".tooltipify > span.icon {\n" +
-        "    border: 7px solid transparent;\n" +
-        "    height: 0;\n" +
-        "    position: absolute;\n" +
-        "    width: 0;\n" +
-        "}\n" +
-        "\n" +
-        ".tooltipify.left {\n" +
-        "    margin-left: -10px;\n" +
-        "}\n" +
-        "\n" +
-        ".tooltipify.bottom > span.icon {\n" +
-        "    margin-left: 3px;\n" +
-        "    border-top: 0;\n" +
-        "    border-bottom-color: #000;\n" +
-        "    top: -7px;\n" +
-        "}\n" +
-        ".tooltipify > .content {\n" +
-        "    color: #FFF;\n" +
-        "    font-size: 11px;\n" +
-        "    font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n" +
-        "    padding: 10px;\n" +
-        "}\n";
+
     if (pageConfigure.currentPage == 0) {
         parentDiv.insertBefore(div, firstChild);//插在第一个按钮的前面
         cssStyle = ".printButton {\n" +
@@ -285,18 +267,24 @@
             "    }";
     } else if (pageConfigure.currentPage == 4) {
         document.body.appendChild(div);//插在最后一个按钮的后面
+        document.body.appendChild(div46);//插在最后一个按钮的后面
         object = document.getElementsByClassName("like-btn")[0];
         if (object) {
-            pos = object.getBoundingClientRect();
+            pos = object.getBoundingClientRect();//参考坐标
             btnLeft = pos.left;
-            btnTop = pos.top + pos.height * 10;
+            btnTop = pos.top + pos.height * 10.1;
+            tipTop = btnTop + pos.height;
+            tipLeft = btnLeft - 5;
         } else {
             //当前浏览器不支持该方法
             var actualLeft = getElementLeft(object);
             var actualTop = getElementTop(object);
             btnLeft = actualLeft - scrollLeft;
             btnTop = actualTop - scrollTop + object.offsetWidth * 1.25;
+            tipTop = btnTop + object.offsetHeight;
+            tipLeft = btnLeft - 5;
         }
+
         cssStyle =
             ".pagePrint{\n" +
             "        background-color: white;\n" +
@@ -313,7 +301,33 @@
             "        width:2em;\n" +
             "        height:2em;\n" +
             "        margin-top:0.5em;\n" +
-            "    }\n" + tooltipify;
+            "    }\n" +
+            "    .tooltips{\n" +
+            "        display: none;\n" +
+            "        align-items: center;\n" +
+            "        position: fixed;\n" +
+            "        top: " + tipTop + "px;\n" +
+            "        left: " + tipLeft + "px;\n" +
+            "    }\n" +
+            "    .tooltip-one {\n" +
+            "        width: 0;\n" +
+            "        height: 0;\n" +
+            "        border-left: 6px solid transparent;\n" +
+            "        border-right: 6px solid transparent;\n" +
+            "        border-bottom: 12px solid black;\n" +
+            "        margin-left: 20px;\n" +
+            "    }\n" +
+            "    .tooltip-two{\n" +
+            "        background-color: black;\n" +
+            "        color: white;\n" +
+            "        font-size: 12px;\n" +
+            "        width: 75px;\n" +
+            "        height: 25px;\n" +
+            "        text-align: center;\n" +
+            "        border-radius: 5px;\n" +
+            "        padding-top: 6px;\n" +
+            "        margin-top: -5px;\n" +
+            "    }";
     } else if (pageConfigure.currentPage == 5) {
         parentDiv.appendChild(div);
         cssStyle =
@@ -323,11 +337,14 @@
             "    }\n";
     } else if (pageConfigure.currentPage == 6) {
         document.body.appendChild(div);
+        document.body.appendChild(div46);
         object = document.getElementsByClassName("dropdown")[5];
         if (object) {
             pos = object.getBoundingClientRect();
             btnLeft = pos.left;
             btnTop = pos.top + pos.height * 1;
+            tipTop = btnTop + pos.height;
+            tipLeft = btnLeft - 5;
         } else {
             object = document.getElementsByClassName("dropdown")[1];
             //当前浏览器不支持该方法
@@ -335,6 +352,8 @@
             var actualTop = getElementTop(object);
             btnLeft = actualLeft - scrollLeft;
             btnTop = actualTop - scrollTop + object.offsetWidth * 1.25;
+            tipTop = btnTop + object.offsetHeight;
+            tipLeft = btnLeft - 5;
         }
 
         cssStyle =
@@ -353,7 +372,33 @@
             "        width:1.2em;\n" +
             "        height:1.2em;\n" +
             "        margin-top:0.4em;\n" +
-            "    }\n" + tooltipify;
+            "    }\n" +
+            "    .tooltips{\n" +
+            "        display: none;\n" +
+            "        align-items: center;\n" +
+            "        position: fixed;\n" +
+            "        top: " + tipTop + "px;\n" +
+            "        left: " + tipLeft + "px;\n" +
+            "    }\n" +
+            "    .tooltip-one {\n" +
+            "        width: 0;\n" +
+            "        height: 0;\n" +
+            "        border-left: 6px solid transparent;\n" +
+            "        border-right: 6px solid transparent;\n" +
+            "        border-bottom: 12px solid black;\n" +
+            "        margin-left: 20px;\n" +
+            "    }\n" +
+            "    .tooltip-two{\n" +
+            "        background-color: black;\n" +
+            "        color: white;\n" +
+            "        font-size: 12px;\n" +
+            "        width: 75px;\n" +
+            "        height: 25px;\n" +
+            "        text-align: center;\n" +
+            "        border-radius: 5px;\n" +
+            "        padding-top: 6px;\n" +
+            "        margin-top: -5px;\n" +
+            "    }";
     }
     let cssNode = document.createElement("style");
     cssNode.id = "THT_Style";
@@ -361,20 +406,15 @@
     cssNode.innerHTML = cssStyle;
     document.body.appendChild(cssNode);
 
-    if (pageConfigure.currentPage == 4 || pageConfigure.currentPage == 6) {
-        $(".pagePrint [title]").tooltipify({position: 'bottom'});
-    }
-
     if (pageConfigure.currentPage != 3) {
         $(".printButton").click(function () {
             if (pageConfigure.currentPage == 0) {
-                if (page2pdfClick == false) {//第一次点击时所有讨论都加上文章转PDF的文字
+                if (page2pdfClick == false) {
                     if (buttonCLickCount > 0) {
                         removeStyle();
                     }
                     page2pdfClick = true;
                     if (pageConfigure.pageHref.indexOf("/p") != -1) {
-                        //先隐藏部分元素，然后打印。在打印完毕后再展示
                         Promise.all([updateStyle()]).then(transformPDF);
                     } else if (pageConfigure.pageHref.indexOf("/question") != -1) {
                         addPrintText();
@@ -518,7 +558,6 @@
     function getElementLeft(ele) {
         var actualLeft = ele.offsetLeft;
         var current = ele.offsetParent;
-        // 如果当前元素不是根元素
         while (current !== null) {
             actualLeft += current.offsetLeft;
             current = current.offsetParent;
@@ -536,6 +575,16 @@
         return actualTop;
     }
 
+    function hoverEvent(){
+        if (pageConfigure.currentPage == 4||pageConfigure.currentPage == 6){
+            $(".printButton").hover(function (){
+                $(".tooltips").show(100);
+            },function (){
+                $(".tooltips").hide(100);
+            });
+        }
+    }
+
     function eventListener() {//归纳所有的事件监听到一个函数
         if (pageConfigure.currentPage == 0) {
             document.addEventListener('DOMNodeInserted', function () {//添加监听事件，检测是否发生懒加载
@@ -551,7 +600,6 @@
     }
 
     function addPrintText() {
-        //给每个讨论都加上打印的按钮，然后再打印
         let parentDiv = document.querySelectorAll('.AnswerItem-authorInfo');
         // let parentDiv = document.querySelectorAll('.AuthorInfo');//不能用这个来查，因为一个讨论里class为Authorinfo的不止一个
         let temp = listItemNumber;
@@ -568,7 +616,7 @@
             createParentEle(".ModalWrap", newIndex);
             var cssStyle2 = "\n" + "#" + newParentId + "{display:none;}" + "\n";
             addStyle(cssStyle2);
-            $(document).on("click", "#" + className1, function () {//获取讨论编号data-za-index,然后打印讨论编号data-za-index对应的讨论
+            $(document).on("click", "#" + className1, function () {
                 let buttonIndex = document.getElementById(className1).parentElement.parentElement.parentElement.parentElement.getAttribute('data-za-index');
                 transformPDF1(buttonIndex);
             });
@@ -578,13 +626,13 @@
 
     // 文章转pdf--讨论--知乎专用
     function transformPDF1(buttonIndex) {
-        var printDiv = $(".AnswerItem")[buttonIndex];
-        var parentNew = document.createElement("div");
+        var printDiv = $(".AnswerItem")[buttonIndex];//获取要打印的元素
+        var parentNew = document.createElement("div");//创建新的父节点
         var parentID = 'printDiv' + buttonIndex;
-        parentNew.id = parentID;
-        printDiv.parentNode.replaceChild(parentNew, printDiv);
-        parentNew.appendChild(printDiv);
-        $("#" + parentID).print({
+        parentNew.id = parentID;//给父节点命名
+        printDiv.parentNode.replaceChild(parentNew, printDiv);//将原有的父节点的子孩子替换为现在的父节点
+        parentNew.appendChild(printDiv);//将打印的元素变成新的父节点的子元素
+        $("#" + parentID).print({//打印新的父元素
             debug: false,
             importCSS: true,
             printContainer: true,
@@ -593,7 +641,7 @@
     }
 
     //修改博客园导航栏的宽度
-    function updateNavWidthT() {
+    function updateNavWidth() {
         if (pageConfigure.currentPage == 3) {
             let a = document.getElementById("pagePrint");
             let width = getComputedStyle(a).width.replace("px", "");
@@ -609,13 +657,13 @@
     function safeWaitFunction() {
         setInterval(function () {
             var a = document.getElementsByClassName("printButton");
-            if (a.length == 0) {
+            if (a.length == 0) {//如果为空，则添加
                 if (pageConfigure.currentPage == 1 || pageConfigure.currentPage == 2 || pageConfigure.currentPage == 3 || pageConfigure.currentPage == 5) {
-                    parentDiv.appendChild(div);
+                    parentDiv.appendChild(div);//插在最后一个按钮的后面
                 } else if (pageConfigure.currentPage == 4 || pageConfigure.currentPage == 6) {
                     document.body.appendChild(div);
                 } else if (pageConfigure.currentPage == 0) {
-                    parentDiv.insertBefore(div, firstChild);
+                    parentDiv.insertBefore(div, firstChild);//插在第一个按钮的前面
                 }
                 clearInterval();
             }
@@ -623,7 +671,8 @@
     }
 
     eventListener();
-    updateNavWidthT();
+    updateNavWidth();
     safeWaitFunction();
+    hoverEvent();
 })
 ();
