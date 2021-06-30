@@ -1,6 +1,8 @@
 // ==UserScript==
 // @name         网页文章转PDF(网页局部区域打印)-适用于知乎/CSDN/简书/博客园/开源中国/掘金/思否
-// @namespace    https://greasyfork.org/zh-CN/scripts/421429
+// @namespace    https://greasyfork.org/zh-CN/scripts/428697
+// @homepageURL  https://greasyfork.org/zh-CN/scripts/428697
+// @home-url1    https://github.com/doublesweet01/BS_script
 // @version      10.0
 // @description  把知乎、CSDN、简书、博客园、开源中国、掘金、思否等主流博客网站的文章部分另存为PDF，便于本地进行编辑。兼容chrome,firefox,edge浏览器，其余未测试
 // @author       sweet
