@@ -40,8 +40,11 @@
 文章转PDF按钮的位置如下图所示：
 ![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF10.png)  
 #### 5. 开源中国    
-文章转PDF按钮的位置如下图所示：
-![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF11.png)  
+开源中国的博文主要在两个地方：1.具体博客 2.问答    
+具体博客的文章转PDF按钮位置如下图所示：  
+![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF11.png)    
+问答的文章转PDF按钮位置如下图所示：  
+![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF14.png)  
 #### 6. 思否  
 文章转PDF按钮的位置如下图所示：
 ![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF12.png)  
