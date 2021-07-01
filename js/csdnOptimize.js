@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         CSDN文章阅读优化，过滤相关推荐中的下载模块&免登录查看所有评论&去广告&免登录复制
 // @namespace    https://greasyfork.org/zh-CN/scripts/425479
-// @version      5.0
+// @version      5.1
 // @description  csdn文章阅读界面下侧的相关文章中会有下载模块，但是一般我们只是想看文章，不想跳到相关下载，因此想写个脚本过滤掉下载模块，同时还实现免登录查看所有评论的功能，评论保留翻页功能,页面实现去广告
 // @author       sweet
 // @include      *://blog.csdn.net/*/article/details/*
 // @run-at      document-idle
 // @icon        https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/sweet.jpg
 // @license     GPL-3.0-only
+// @note        v5.1修复一个bug
 // @note        v5.0相关推荐模块进一步优化，去除课程列表
 // @note        v4.0实现免登录复制
 // @note        v3.0实现去广告
@@ -68,7 +69,7 @@
             case 'type_course':
                 let hideElement02 = document.querySelectorAll('.' + className);
                 if (hideElement02) {
-                    for (let i = 0; i < hideElement.length; i++) {
+                    for (let i = 0; i < hideElement02.length; i++) {
                         hideElement02[i].style.display = "none";
                     }
                 }
