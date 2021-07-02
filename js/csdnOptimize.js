@@ -5,6 +5,7 @@
 // @description  csdn文章阅读界面下侧的相关文章中会有下载模块，但是一般我们只是想看文章，不想跳到相关下载，因此想写个脚本过滤掉下载模块，同时还实现免登录查看所有评论的功能，评论保留翻页功能,页面实现去广告
 // @author       sweet
 // @include      *://blog.csdn.net/*/article/details/*
+// @include      *://*.blog.csdn.net/article/details/*
 // @run-at      document-idle
 // @icon        https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/sweet.jpg
 // @license     GPL-3.0-only
