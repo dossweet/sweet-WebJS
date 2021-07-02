@@ -3,13 +3,14 @@
 // @namespace    https://greasyfork.org/zh-CN/scripts/428697
 // @homepageURL  https://greasyfork.org/zh-CN/scripts/428697
 // @home-url1    https://github.com/doublesweet01/BS_script
-// @version      10.0
+// @version      10.1
 // @description  把知乎、CSDN、简书、博客园、开源中国、掘金、思否等主流博客网站的文章部分另存为PDF，便于本地进行编辑。兼容chrome,firefox,edge浏览器，其余未测试
 // @author       sweet
 // @include       https://zhuanlan.zhihu.com/p/*
 // @include       https://www.zhihu.com/question/*/answer/*
 // @include      https://www.zhihu.com/question/*
 // @include      https://blog.csdn.net/*/article/details/*
+// @include      https://*.blog.csdn.net/article/details/*
 // @include      https://www.jianshu.com/p/*
 // @include      https://www.cnblogs.com/*
 // @include      https://juejin.cn/post/*
@@ -23,6 +24,7 @@
 // @require     https://cdn.jsdelivr.net/npm/jQuery.print@1.5.1/jQuery.print.min.js
 // @require     https://code.jquery.com/jquery-migrate-1.2.1.min.js
 // @license     GPL 3.0 only
+// @note        v10.1修复csdn个别页面失效问题
 // @note        v10.0整合了是否
 // @note        v9.0整合了开源中国
 // @note        v8.0整合了掘金
