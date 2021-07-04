@@ -3,7 +3,7 @@
 // @namespace    https://greasyfork.org/zh-CN/scripts/428697
 // @homepageURL  https://greasyfork.org/zh-CN/scripts/428697
 // @home-url1    https://github.com/doublesweet01/BS_script
-// @version      10.1
+// @version      10.2
 // @description  把知乎、CSDN、简书、博客园、开源中国、掘金、思否等主流博客网站的文章部分另存为PDF，便于本地进行编辑。兼容chrome,firefox,edge浏览器，其余未测试
 // @author       sweet
 // @include       https://zhuanlan.zhihu.com/p/*
@@ -24,6 +24,7 @@
 // @require     https://cdn.jsdelivr.net/npm/jQuery.print@1.5.1/jQuery.print.min.js
 // @require     https://code.jquery.com/jquery-migrate-1.2.1.min.js
 // @license     GPL 3.0 only
+// @note        v10.2修复csdn页面打印不全的bug
 // @note        v10.1修复csdn个别页面失效问题
 // @note        v10.0整合了是否
 // @note        v9.0整合了开源中国
@@ -544,7 +545,8 @@
             parentDiv.className = "articleComment";
             addStyle(".Post-Author,.Reward,.Post-topicsAndReviewer,.articleComment,.ContentItem-actions,.LabelContainer-wrapper{display:none !important;}");
         } else if (pageConfigure.currentPage == 1) {
-            addStyle(".article-info-box,#csdn-shop-window-top{display:none !important;}");
+            addStyle(".article-info-box,#csdn-shop-window-top,#blogColumnPayAdvert{display:none !important;}\n");
+            addStyle(".article-header-box,.baidu_pl{width:90% !important;}");
         } else if (pageConfigure.currentPage == 2) {
             addStyle(".rEsl9f,._1kCBjS,._19DgIp,._13lIbp,.d0hShY{display:none !important;}");
         } else if (pageConfigure.currentPage == 3) {
@@ -625,7 +627,10 @@
                 operaSupport: true
             });
         }
-        if (hasAddStyle == true) {
+        if (pageConfigure.currentPage == 1) {//csdn特殊处理，需要两次removeStyle
+            removeStyle();
+            removeStyle();
+        } else if (hasAddStyle == true) {
             removeStyle();
         }
         safeWaitFunctionTT();
