@@ -1,3 +1,7 @@
+sweet-WebJS/js/MergeAllPDF.js实现的是网页文章转PDF的功能（网页局部区域打印）  
+sweet-WebJS/js/csdnOptimize.js实现的是CSDN阅读优化的功能（免登录查看所有评论、免登录去广告、免登录复制、过滤相关推荐中的下载和课程模块）  
+sweet-WebJS/js/closeIDM.js实现的是关闭IDM强制在浏览器跳转到下载页  
+
 ### 声明
 本脚本仅供学习交流！！！不允许以任何目的将源码进行商业用途，否则追究法律责任！！！
 ### 注意事项：
