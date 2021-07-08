@@ -8,7 +8,6 @@
 // @include      *://*.blog.csdn.net/article/details/*
 // @run-at      document-idle
 // @icon        https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/sweet.jpg
-// @license     GPL-3.0-only
 // @note        v5.1修复一个bug
 // @note        v5.0相关推荐模块进一步优化，去除课程列表
 // @note        v4.0实现免登录复制
