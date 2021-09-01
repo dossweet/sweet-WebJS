@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         CSDN文章阅读优化，过滤相关推荐中的下载模块&免登录查看所有评论&去广告&免登录复制
+// @name         CSDN文章阅读优化，过滤相关推荐中的下载模块&免登录查看所有评论&去广告
 // @namespace    https://greasyfork.org/zh-CN/scripts/425479
 // @version      5.1
 // @description  csdn文章阅读界面下侧的相关文章中会有下载模块，但是一般我们只是想看文章，不想跳到相关下载，因此想写个脚本过滤掉下载模块，同时还实现免登录查看所有评论的功能，评论保留翻页功能,页面实现去广告
@@ -8,6 +8,7 @@
 // @include      *://*.blog.csdn.net/article/details/*
 // @run-at      document-idle
 // @icon        https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/sweet.jpg
+// @note        v6.0去除免登录复制功能
 // @note        v5.1修复一个bug
 // @note        v5.0相关推荐模块进一步优化，去除课程列表
 // @note        v4.0实现免登录复制
@@ -113,17 +114,6 @@
         }, times);
     }
 
-    function copyNoLogin(){
-        $(".hljs-button").attr("data-title", "免登录复制");
-        $(".hljs-button").click(function(){
-            setClipboard(this.parentNode.innerText);//获取复制内容
-            $(".hljs-button").attr("data-title", "复制成功");
-            setTimeout(function(){
-                $(".hljs-button").attr("data-title", "免登录复制");
-            }, 1000);
-        });
-    }
-
     //打印脚本信息
     function printScript() {
         console.log("sweet-CSDN文章阅读优化，过滤相关推荐模块的下载部分&免登录查看全部评论&免登录复制&去广告~")
@@ -131,6 +121,5 @@
 
     safeWaitFunc(classNameArray, removeElements);
     safeWaitFunc(idNameArray, removeElementsById);
-    copyNoLogin();
     printScript();
 })();
