@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         网页文章转PDF(网页局部区域打印)-适用于知乎/CSDN/简书/博客园/开源中国/掘金/思否
+// @name         网页文章转PDF(网页局部区域打印)
 // @namespace    https://greasyfork.org/zh-CN/scripts/428697
 // @homepageURL  https://greasyfork.org/zh-CN/scripts/428697
 // @home-url1    https://github.com/doublesweet01/BS_script
-// @version      10.3
+// @version      10.4
 // @description  把知乎、CSDN、简书、博客园、开源中国、掘金、思否等主流博客网站的文章部分另存为PDF，便于本地进行编辑。兼容chrome,firefox,edge浏览器，其余未测试
 // @author       sweet
 // @include       https://zhuanlan.zhihu.com/p/*
@@ -23,10 +23,11 @@
 // @require     https://cdn.staticfile.org/jquery/1.9.1/jquery.min.js
 // @require     https://cdn.jsdelivr.net/npm/jQuery.print@1.5.1/jQuery.print.min.js
 // @require     https://code.jquery.com/jquery-migrate-1.2.1.min.js
+// @note        v10.4 修复由于知乎改版带来的新bug以及question推荐页面强制跳转的bug
 // @note        v10.3删除许可证
 // @note        v10.2修复csdn页面打印不全的bug
 // @note        v10.1修复csdn个别页面失效问题
-// @note        v10.0整合了是否
+// @note        v10.0整合了思否
 // @note        v9.0整合了开源中国
 // @note        v8.0整合了掘金
 // @note        v7.0整合了博客园
@@ -53,12 +54,25 @@
         currentPage: 0
     }
     var pageHref = window.location.href;//获取网址
-    if (pageHref.indexOf("www.zhihu.com/question/") != -1 && pageHref.indexOf("/answer/") != -1) {//表示是讨论回答
-        pageConfigure.index = pageHref.indexOf("answer");
-        pageConfigure.pageHref = pageHref.substring(0, pageConfigure.index - 1);
+    if (pageHref.indexOf("www.zhihu.com/question/") != -1 && pageHref.indexOf("/answer/") != -1) {//表示是讨论回答,推荐回答页面
+        pageConfigure.pageHref = pageHref;
         pageConfigure.parentDiv = "QuestionButtonGroup";
         pageConfigure.firstChild = "FollowButton";
-        pageConfigure.ifNeedPageRedirect = true;
+        $(document).ready(function () {
+            let readMoreBtn = document.querySelectorAll('.ContentItem-expandButton');
+            // 自动点击页面上的所有阅读全文
+            for (let i = 0; i < readMoreBtn.length; i++) {
+                readMoreBtn[i].click();
+            }
+        });
+
+        let readAllAnswer = $('.ViewAll-QuestionMainAction');
+        for (let i = 0; i < readAllAnswer.length; i++) {
+            readAllAnswer[i].setAttribute('href', 'javascript:void(0)');
+            readAllAnswer[i].addEventListener('click', () => {
+                toAllAnswerPage();
+            })
+        }
         pageConfigure.currentPage = 0;//表示是知乎的讨论页
     } else if (pageHref.indexOf("zhuanlan.zhihu.com/p") != -1) {//表示是文章页
         pageConfigure.pageHref = pageHref;
@@ -103,6 +117,12 @@
 
     if (pageConfigure.ifNeedPageRedirect == true) {
         window.location.replace(pageConfigure.pageHref);
+    }
+
+    function toAllAnswerPage() {
+        let index = pageConfigure.pageHref.indexOf("answer");
+        let pageHref = pageConfigure.pageHref.substring(0, index - 1);
+        window.location.replace(pageHref);
     }
 
     // 关闭登录框
@@ -502,29 +522,31 @@
     if (pageConfigure.currentPage != 3) {
         $(".printButton").click(function () {
             if (pageConfigure.currentPage == 0) {
-                if (page2pdfClick == false) {//第一次点击时所有讨论都加上文章转PDF的文字
-                    if (buttonCLickCount > 0) {
-                        removeStyle();
-                    }
-                    page2pdfClick = true;
-                    if (pageConfigure.pageHref.indexOf("/p") != -1) {
-                        //先隐藏部分元素，然后打印。在打印完毕后再展示
-                        Promise.all([updateStyle()]).then(transformPDF);
-                    } else if (pageConfigure.pageHref.indexOf("/question") != -1) {//知乎的讨论是采用懒加载的形式，每次增加五个
+                if (pageConfigure.pageHref.indexOf("/p") != -1) {
+                    //先隐藏部分元素，然后打印。在打印完毕后再展示
+                    Promise.all([updateStyle()]).then(transformPDF);
+                } else {
+                    //表示是知乎讨论，知乎的讨论是采用懒加载的形式，每次增加五个
+                    if (page2pdfClick == false) {//第一次点击时所有讨论都加上文章转PDF的文字
+                        if (buttonCLickCount > 0) {
+                            removeStyle();
+                            buttonCLickCount--;
+                        }
+                        page2pdfClick = true;
                         addPrintText();
                         $(".printButton").text('取消转换');
+                    } else {
+                        var cssStyle =
+                            "    .pageButtons{\n" +
+                            "        display:none;\n" +
+                            "    }";
+                        addStyle(cssStyle);
+                        page2pdfClick = false;
+                        if (pageConfigure.pageHref.indexOf("/question") != -1) {
+                            $(".printButton").text('文章转PDF');
+                        }
+                        buttonCLickCount++;
                     }
-                } else {
-                    var cssStyle =
-                        "    .pageButtons{\n" +
-                        "        display:none;\n" +
-                        "    }";
-                    addStyle(cssStyle);
-                    page2pdfClick = false;
-                    if (pageConfigure.pageHref.indexOf("/question") != -1) {
-                        $(".printButton").text('文章转PDF');
-                    }
-                    buttonCLickCount++;
                 }
             } else if (pageConfigure.currentPage == 1 || pageConfigure.currentPage == 4 || pageConfigure.currentPage == 5 || pageConfigure.currentPage == 6) {
                 Promise.all([updateStyle()]).then(transformPDF);
@@ -543,7 +565,7 @@
         if (pageConfigure.currentPage == 0) {
             var parentDiv = $(".is-bottom")[0].parentElement;
             parentDiv.className = "articleComment";
-            addStyle(".Post-Author,.Reward,.Post-topicsAndReviewer,.articleComment,.ContentItem-actions,.LabelContainer-wrapper{display:none !important;}");
+            addStyle(".Post-Author,.Reward,.Post-topicsAndReviewer,.articleComment,.ContentItem-actions,.LabelContainer-wrapper,.css-d5ulu0-CatalogContainer{display:none !important;}");
         } else if (pageConfigure.currentPage == 1) {
             addStyle(".article-info-box,#csdn-shop-window-top,#blogColumnPayAdvert{display:none !important;}\n");
             addStyle(".article-header-box,.baidu_pl{width:90% !important;}");
@@ -729,12 +751,14 @@
             div1.className = "pageButtons";
             parentDiv[newIndex].appendChild(div1);
             let className1 = "printButton" + newIndex;
-            let newParentId = "newParentIndex" + newIndex;
-            createParentEle(".ModalWrap", newIndex);
-            var cssStyle2 = "\n" + "#" + newParentId + "{display:none;}" + "\n";
-            addStyle(cssStyle2);
+
             $(document).on("click", "#" + className1, function () {
-                let buttonIndex = document.getElementById(className1).parentElement.parentElement.parentElement.parentElement.getAttribute('data-za-index');
+                let newParentId = "newParentIndex" + newIndex;
+                createParentEle(".ModalWrap", newIndex);
+                let cssStyle2 = "\n" + "#" + newParentId + ",.ModalExp-content,.LabelContainer-wrapper,.css-1k5dpte,.ContentItem-actions{display:none;}" + "\n";
+                addStyle(cssStyle2);
+                // let buttonIndex = document.getElementById(className1).parentElement.parentElement.parentElement.parentElement.getAttribute('data-za-index');
+                let buttonIndex = className1.substring(11);
                 transformPDF1(buttonIndex);
             });
         }
@@ -755,6 +779,7 @@
             printContainer: true,
             operaSupport: true
         });
+        removeStyle();
     }
 
     //修改博客园导航栏的宽度
