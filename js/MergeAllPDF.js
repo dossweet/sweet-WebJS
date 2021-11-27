@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         网页文章转PDF(网页局部区域打印)
+// @name         博客转PDF(网页局部区域打印)-适用于知乎、CSDN、掘金、博客园、开源中国、简书、思否
 // @namespace    https://greasyfork.org/zh-CN/scripts/428697
 // @homepageURL  https://greasyfork.org/zh-CN/scripts/428697
 // @home-url1    https://github.com/doublesweet01/BS_script
-// @version      10.4
-// @description  把知乎、CSDN、简书、博客园、开源中国、掘金、思否等主流博客网站的文章部分另存为PDF，便于本地进行编辑。兼容chrome,firefox,edge浏览器，其余未测试
+// @version      10.5
+// @description  把知乎、CSDN、简书、博客园、开源中国、掘金、思否七大主流博客网站的文章部分另存为PDF，便于本地进行编辑。兼容chrome,firefox,edge浏览器，其余未测试
 // @author       sweet
 // @include       https://zhuanlan.zhihu.com/p/*
 // @include       https://www.zhihu.com/question/*/answer/*
@@ -23,18 +23,19 @@
 // @require     https://cdn.staticfile.org/jquery/1.9.1/jquery.min.js
 // @require     https://cdn.jsdelivr.net/npm/jQuery.print@1.5.1/jQuery.print.min.js
 // @require     https://code.jquery.com/jquery-migrate-1.2.1.min.js
+// @note        v10.5 修改脚本名称
 // @note        v10.4 修复由于知乎改版带来的新bug以及question推荐页面强制跳转的bug
-// @note        v10.3删除许可证
-// @note        v10.2修复csdn页面打印不全的bug
-// @note        v10.1修复csdn个别页面失效问题
-// @note        v10.0整合了思否
-// @note        v9.0整合了开源中国
-// @note        v8.0整合了掘金
-// @note        v7.0整合了博客园
-// @note        v6.0整合了简书
-// @note        v5.0整合了csdn
-// @note        v4.0整合了知乎
-// @note        v1.0实现知乎网页打印功能
+// @note        v10.3 删除许可证
+// @note        v10.2 修复csdn页面打印不全的bug
+// @note        v10.1 修复csdn个别页面失效问题
+// @note        v10.0 整合了思否
+// @note        v9.0 整合了开源中国
+// @note        v8.0 整合了掘金
+// @note        v7.0 整合了博客园
+// @note        v6.0 整合了简书
+// @note        v5.0 整合了csdn
+// @note        v4.0 整合了知乎
+// @note        v1.0 实现知乎网页打印功能
 // ==/UserScript==
 (function () {
     'use strict';
