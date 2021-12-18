@@ -3,7 +3,7 @@
 // @namespace    https://greasyfork.org/zh-CN/scripts/428697
 // @homepageURL  https://greasyfork.org/zh-CN/scripts/428697
 // @home-url1    https://github.com/doublesweet01/BS_script
-// @version      10.5
+// @version      10.6
 // @description  把知乎、CSDN、简书、博客园、开源中国、掘金、思否七大主流博客网站的文章部分另存为PDF，便于本地进行编辑。兼容chrome,firefox,edge浏览器，其余未测试
 // @author       sweet
 // @include       https://zhuanlan.zhihu.com/p/*
@@ -23,6 +23,7 @@
 // @require     https://cdn.staticfile.org/jquery/1.9.1/jquery.min.js
 // @require     https://cdn.jsdelivr.net/npm/jQuery.print@1.5.1/jQuery.print.min.js
 // @require     https://code.jquery.com/jquery-migrate-1.2.1.min.js
+// @note        v10.6 修复由于掘金改版导致的打印失效的问题&&修复知乎讨论页打印失败的问题&&恢复保留所有平台的作者信息
 // @note        v10.5 修改脚本名称
 // @note        v10.4 修复由于知乎改版带来的新bug以及question推荐页面强制跳转的bug
 // @note        v10.3 删除许可证
@@ -182,7 +183,7 @@
         div.innerHTML =
             '        <div class="pagePrint panel-btn">\n' +
             '        <div class="tooltip">\n' +
-            '        <img id="printLogo" src="https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/printLogo03.png">\n' +
+            '        <img id="printLogo" src="https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/printLogo-jj.png">\n' +
             '        </div>\n' +
             '        </div>\n';
         div.className = "printButton";
@@ -316,7 +317,7 @@
         if (object) {
             pos = object.getBoundingClientRect();//参考坐标
             btnLeft = pos.left;
-            btnTop = pos.top + pos.height * 10.1;
+            btnTop = pos.top + pos.height * 9;
             tipTop = btnTop + pos.height;
             tipLeft = btnLeft - 5;
         } else {
@@ -334,17 +335,17 @@
             "        background-color: white;\n" +
             "        border-radius: 50%;\n" +
             "        text-align: center;\n" +
-            "        height: 3em;\n" +
-            "        width: 3em;\n" +
+            "        height: 4rem;\n" +
+            "        width: 4rem;\n" +
             "        position: fixed;\n" +
             "        top: " + btnTop + "px;\n" +
             "        left: " + btnLeft + "px;\n" +
             "        z-index: 1000;\n" +
             "    }\n" +
             "    #printLogo{\n" +
-            "        width:2em;\n" +
-            "        height:2em;\n" +
-            "        margin-top:0.5em;\n" +
+            "        width:2rem;\n" +
+            "        height:2rem;\n" +
+            "        margin-top:1rem;\n" +
             "    }\n" +
             "    .tooltips{\n" +
             "        display: none;\n" +
@@ -566,26 +567,28 @@
         if (pageConfigure.currentPage == 0) {
             var parentDiv = $(".is-bottom")[0].parentElement;
             parentDiv.className = "articleComment";
-            addStyle(".Post-Author,.Reward,.Post-topicsAndReviewer,.articleComment,.ContentItem-actions,.LabelContainer-wrapper,.css-d5ulu0-CatalogContainer{display:none !important;}");
+            addStyle(".FollowButton,.Reward,.Post-topicsAndReviewer,.articleComment,.ContentItem-actions,.LabelContainer-wrapper,.css-d5ulu0-CatalogContainer{display:none !important;}");
         } else if (pageConfigure.currentPage == 1) {
-            addStyle(".article-info-box,#csdn-shop-window-top,#blogColumnPayAdvert{display:none !important;}\n");
+            addStyle(".article-type-img,.blog-tags-box,.slide-content-box,.operating,#blog_detail_zk_collection,.article-heard-img,.read-count,#csdn-shop-window-top,#blogColumnPayAdvert{display:none !important;}\n");
             addStyle(".article-header-box,.baidu_pl{width:90% !important;}");
         } else if (pageConfigure.currentPage == 2) {
-            addStyle(".rEsl9f,._1kCBjS,._19DgIp,._13lIbp,.d0hShY{display:none !important;}");
+            addStyle("._3tCVn5,._1kCBjS,._19DgIp,._13lIbp,.d0hShY{display:none !important;}");
+            addStyle(".rEsl9f{margin-bottom:5px;}");
         } else if (pageConfigure.currentPage == 3) {
             addStyle(".postDesc,#blog_post_info_block,#comment_form{display:none !important;}");
         } else if (pageConfigure.currentPage == 4) {
-            var partentDiv01 = $(".footer-author-block")[0].parentElement;
-            partentDiv01.id = "jj-author"
-            addStyle(".main-header-box,.tag-list-box,.article-banner,#jj-author,#comment-box,.recommended-area,.author-info-block,.column-container{display:none !important;}");
+            addStyle(".tag-list-box,.extension-banner,.follow-button{display:none !important;}");
+            addStyle(".author-info-block{margin-bottom:0rem !important;}");
         } else if (pageConfigure.currentPage == 5) {
             if (pageConfigure.pageHref.indexOf("blog") != -1) {
-                addStyle(".article-box__meta,.article-box__group,.tags-box,.copyright-box,.action-box,.recommend-box{display:none !important;}");
+                addStyle(".article-box__group,.tags-box,.copyright-box,.action-box,.recommend-box{display:none !important;}");
+                addStyle(".article-box__meta,.item-list{display:inline-flex;}");
+                addStyle(".item{margin-right:1rem;}");
             } else if (pageConfigure.pageHref.indexOf("question") != -1) {
-                addStyle(".tags,.horizontal,.poll-wrap,.additional-remarks,.segment{display:none !important;}");
+                addStyle(".tags,.poll-wrap,.additional-remarks,.segment{display:none !important;}");
             }
         } else if (pageConfigure.currentPage == 6) {
-            addStyle(".justify-content-between,.functional-area-bottom,.text-secondary,.flex-sm-row{display:none !important;}");
+            addStyle(".functional-area-bottom,.flex-sm-row{display:none !important;}");
         }
     }
 
@@ -620,7 +623,7 @@
                 operaSupport: true
             });
         } else if (pageConfigure.currentPage == 4) {
-            $(".column-view").print({
+            $(".article").print({
                 debug: false,
                 importCSS: true,
                 printContainer: true,
@@ -650,7 +653,11 @@
                 operaSupport: true
             });
         }
-        if (pageConfigure.currentPage == 1) {//csdn特殊处理，需要两次removeStyle
+        if (pageConfigure.currentPage == 1 || pageConfigure.currentPage == 2|| pageConfigure.currentPage == 4) {//csdn特殊处理，需要两次removeStyle
+            removeStyle();
+            removeStyle();
+        } else if (pageConfigure.currentPage == 5) {
+            removeStyle();
             removeStyle();
             removeStyle();
         } else if (hasAddStyle == true) {
@@ -755,7 +762,7 @@
 
             $(document).on("click", "#" + className1, function () {
                 let newParentId = "newParentIndex" + newIndex;
-                createParentEle(".ModalWrap", newIndex);
+                createParentEle(".List-item", newIndex);
                 let cssStyle2 = "\n" + "#" + newParentId + ",.ModalExp-content,.LabelContainer-wrapper,.css-1k5dpte,.ContentItem-actions{display:none;}" + "\n";
                 addStyle(cssStyle2);
                 // let buttonIndex = document.getElementById(className1).parentElement.parentElement.parentElement.parentElement.getAttribute('data-za-index');
@@ -774,6 +781,7 @@
         parentNew.id = parentID;
         printDiv.parentNode.replaceChild(parentNew, printDiv);
         parentNew.appendChild(printDiv);
+
         $("#" + parentID).print({
             debug: false,
             importCSS: true,
