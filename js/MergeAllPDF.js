@@ -3,7 +3,7 @@
 // @namespace    https://greasyfork.org/zh-CN/scripts/428697
 // @homepageURL  https://greasyfork.org/zh-CN/scripts/428697
 // @home-url1    https://github.com/doublesweet01/BS_script
-// @version      10.6
+// @version      10.7
 // @description  把知乎、CSDN、简书、博客园、开源中国、掘金、思否七大主流博客网站的文章部分另存为PDF，便于本地进行编辑。兼容chrome,firefox,edge浏览器，其余未测试
 // @author       sweet
 // @include       https://zhuanlan.zhihu.com/p/*
@@ -23,6 +23,7 @@
 // @require     https://cdn.staticfile.org/jquery/1.9.1/jquery.min.js
 // @require     https://cdn.jsdelivr.net/npm/jQuery.print@1.5.1/jQuery.print.min.js
 // @require     https://code.jquery.com/jquery-migrate-1.2.1.min.js
+// @note        v10.7 修复由于知乎平台的代码优化导致的公式打印失败问题
 // @note        v10.6 修复由于掘金改版导致的打印失效的问题&&修复知乎讨论页打印失败的问题&&恢复保留所有平台的作者信息
 // @note        v10.5 修改脚本名称
 // @note        v10.4 修复由于知乎改版带来的新bug以及question推荐页面强制跳转的bug
@@ -526,7 +527,7 @@
             if (pageConfigure.currentPage == 0) {
                 if (pageConfigure.pageHref.indexOf("/p") != -1) {
                     //先隐藏部分元素，然后打印。在打印完毕后再展示
-                    Promise.all([updateStyle()]).then(transformPDF);
+                    Promise.all([removeImgLazyLoading('.Post-Main', 0), updateStyle()]).then(transformPDF);
                 } else {
                     //表示是知乎讨论，知乎的讨论是采用懒加载的形式，每次增加五个
                     if (page2pdfClick == false) {//第一次点击时所有讨论都加上文章转PDF的文字
@@ -567,7 +568,8 @@
         if (pageConfigure.currentPage == 0) {
             var parentDiv = $(".is-bottom")[0].parentElement;
             parentDiv.className = "articleComment";
-            addStyle(".FollowButton,.Reward,.Post-topicsAndReviewer,.articleComment,.ContentItem-actions,.LabelContainer-wrapper,.css-d5ulu0-CatalogContainer{display:none !important;}");
+            addStyle(".Post-Author{width:100%;}");
+            addStyle(".FollowButton,.Reward,.Post-topicsAndReviewer,.RichContent-action,.articleComment,.RichContent-actions,.ContentItem-actions,.LabelContainer-wrapper,.css-d5ulu0-CatalogContainer{display:none !important;}");
         } else if (pageConfigure.currentPage == 1) {
             addStyle(".article-type-img,.blog-tags-box,.slide-content-box,.operating,#blog_detail_zk_collection,.article-heard-img,.read-count,#csdn-shop-window-top,#blogColumnPayAdvert{display:none !important;}\n");
             addStyle(".article-header-box,.baidu_pl{width:90% !important;}");
@@ -589,6 +591,14 @@
             }
         } else if (pageConfigure.currentPage == 6) {
             addStyle(".functional-area-bottom,.flex-sm-row{display:none !important;}");
+        }
+    }
+
+    function removeImgLazyLoading(parentDom, index) {
+        let parentDiv = document.querySelectorAll(parentDom)[index];
+        let img = parentDiv.getElementsByTagName('img');
+        for (let i = 0; i < img.length; i++) {
+            img[i].removeAttribute('loading');
         }
     }
 
@@ -653,10 +663,10 @@
                 operaSupport: true
             });
         }
-        if (pageConfigure.currentPage == 1 || pageConfigure.currentPage == 2|| pageConfigure.currentPage == 4) {//csdn特殊处理，需要两次removeStyle
+        if (pageConfigure.currentPage == 0 || pageConfigure.currentPage == 1 || pageConfigure.currentPage == 2 || pageConfigure.currentPage == 4) {//csdn特殊处理，需要两次removeStyle
             removeStyle();
             removeStyle();
-        } else if (pageConfigure.currentPage == 5) {
+        } else if (pageConfigure.currentPage == 5 && pageConfigure.pageHref.indexOf("blog") != -1) {
             removeStyle();
             removeStyle();
             removeStyle();
@@ -781,6 +791,7 @@
         parentNew.id = parentID;
         printDiv.parentNode.replaceChild(parentNew, printDiv);
         parentNew.appendChild(printDiv);
+        removeImgLazyLoading(".AnswerItem", buttonIndex);
 
         $("#" + parentID).print({
             debug: false,
