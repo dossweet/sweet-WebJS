@@ -3,7 +3,7 @@
 // @namespace    https://greasyfork.org/zh-CN/scripts/428697
 // @homepageURL  https://greasyfork.org/zh-CN/scripts/428697
 // @home-url1    https://github.com/doublesweet01/BS_script
-// @version      10.7
+// @version      10.8
 // @description  把知乎、CSDN、简书、博客园、开源中国、掘金、思否七大主流博客网站的文章部分另存为PDF，便于本地进行编辑。兼容chrome,firefox,edge浏览器，其余未测试
 // @author       sweet
 // @include       https://zhuanlan.zhihu.com/p/*
@@ -23,6 +23,7 @@
 // @require     https://cdn.staticfile.org/jquery/1.9.1/jquery.min.js
 // @require     https://cdn.jsdelivr.net/npm/jQuery.print@1.5.1/jQuery.print.min.js
 // @require     https://code.jquery.com/jquery-migrate-1.2.1.min.js
+// @note        v10.8 修复知乎平台公式图片加载失败问题
 // @note        v10.7 修复由于知乎平台的代码优化导致的公式打印失败问题
 // @note        v10.6 修复由于掘金改版导致的打印失效的问题&&修复知乎讨论页打印失败的问题&&恢复保留所有平台的作者信息
 // @note        v10.5 修改脚本名称
@@ -599,6 +600,7 @@
         let img = parentDiv.getElementsByTagName('img');
         for (let i = 0; i < img.length; i++) {
             img[i].removeAttribute('loading');
+            img[i].removeAttribute('data-lazy-status');
         }
     }
 
