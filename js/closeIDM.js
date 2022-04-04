@@ -5,11 +5,13 @@
 // @description  使用IDM破解版后经常提示不安全并自动弹出去官网下载的页面，很烦人！！！故写了个脚本关闭该页面
 // @author       sweet
 // @match       https://www.internetdownloadmanager.com/download.html?lng=chn2
+// @include     https://www.internetdownloadmanager.com/*
 // @run-at      document-start
 // @icon        https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/sweet.jpg
 // @license     MIT
-// @note        v1.0实现拦截功能
+// @note        v1.2加大拦截力度
 // @note        v1.1加快拦截速度
+// @note        v1.0实现拦截功能
 // ==/UserScript==
 (function() {
     'use strict';
