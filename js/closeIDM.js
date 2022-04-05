@@ -1,11 +1,10 @@
 // ==UserScript==
 // @name         关闭IDM提示去官网下载的标签页
 // @namespace    https://greasyfork.org/zh-CN/scripts/421429
-// @version      1.1
+// @version      1.2
 // @description  使用IDM破解版后经常提示不安全并自动弹出去官网下载的页面，很烦人！！！故写了个脚本关闭该页面
 // @author       sweet
-// @match       https://www.internetdownloadmanager.com/download.html?lng=chn2
-// @include     https://www.internetdownloadmanager.com/*
+// @include     https://www.internetdownloadmanager.com/download*
 // @run-at      document-start
 // @icon        https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/sweet.jpg
 // @license     MIT
