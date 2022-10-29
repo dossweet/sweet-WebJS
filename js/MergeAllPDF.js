@@ -2,7 +2,7 @@
 // @name         博客转PDF(网页局部区域打印)-适用于知乎、CSDN、掘金、博客园、开源中国、简书、思否
 // @namespace    https://greasyfork.org/zh-CN/scripts/428697
 // @homepageURL  https://greasyfork.org/zh-CN/scripts/428697
-// @home-url1    https://github.com/doublesweet01/BS_script
+// @home-url1    https://github.com/dossweet/sweet-WebJS
 // @version      10.11
 // @description  把知乎、CSDN、简书、博客园、开源中国、掘金、思否七大主流博客网站的文章部分另存为PDF，便于本地进行编辑。兼容chrome,firefox,edge浏览器，其余未测试
 // @author       sweet
@@ -19,7 +19,7 @@
 // @include      https://www.oschina.net/question/*
 // @include      https://segmentfault.com/a/*
 // @run-at      document-idle
-// @icon        https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/sweet.jpg
+// @icon        https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/sweet.jpg
 // @require     https://cdn.staticfile.org/jquery/1.9.1/jquery.min.js
 // @require     https://cdn.jsdelivr.net/npm/jQuery.print@1.5.1/jQuery.print.min.js
 // @require     https://code.jquery.com/jquery-migrate-1.2.1.min.js
