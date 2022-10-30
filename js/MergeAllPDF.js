@@ -3,9 +3,9 @@
 // @namespace    https://greasyfork.org/zh-CN/scripts/428697
 // @homepageURL  https://greasyfork.org/zh-CN/scripts/428697
 // @home-url1    https://github.com/dossweet/sweet-WebJS
-// @version      10.11
+// @version      10.12
 // @description  把知乎、CSDN、简书、博客园、开源中国、掘金、思否七大主流博客网站的文章部分另存为PDF，便于本地进行编辑。兼容chrome,firefox,edge浏览器，其余未测试
-// @author       sweet
+// @author       dossweet
 // @include       https://zhuanlan.zhihu.com/p/*
 // @include       https://www.zhihu.com/question/*/answer/*
 // @include      https://www.zhihu.com/question/*
@@ -23,6 +23,7 @@
 // @require     https://cdn.staticfile.org/jquery/1.9.1/jquery.min.js
 // @require     https://cdn.jsdelivr.net/npm/jQuery.print@1.5.1/jQuery.print.min.js
 // @require     https://code.jquery.com/jquery-migrate-1.2.1.min.js
+// @note        v10.12 修复知乎中公式重复出现的问题
 // @note        v10.11 代码升级，采用更规范的写法 & 修复知乎公式打印失败的问题(较复杂) 1024程序员节快乐呀
 // @note        v10.10 修复博客园长图片打印失败的问题
 // @note        v10.9 修复掘金和思否图标添加失败的问题
@@ -906,6 +907,8 @@
         loadImgWithoutLazyLoading(doc, allImg);
         allImg[allImg.length - 1].onload = function () {
             setTimeout(() => {
+                // remove same dom
+                removeSameDom(doc, "span[id^='MathJax-']");
                 // 关闭iframe
                 doc.close();
                 // 使iframe失去焦点
@@ -989,6 +992,15 @@
             let dataSrc = allImg[i].getAttribute('data-actualsrc');
             if (dataSrc) {
                 allImg[i].src = dataSrc;
+            }
+        }
+    }
+
+    function removeSameDom(document, dom){
+        let mathJaxs = document.querySelectorAll(dom);
+        for(let i = 1; i < mathJaxs.length; i++){
+            if(mathJaxs[i].id === mathJaxs[i - 1].id){
+                mathJaxs[i].parentNode.removeChild(mathJaxs[i]);
             }
         }
     }
