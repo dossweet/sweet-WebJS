@@ -23,38 +23,38 @@ sweet-WebJS/js/closeIDM.js实现的是关闭IDM强制在浏览器跳转到下载
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;知乎的博文有两种形式，第一种是文章详情页；第二种是话题讨论的回答。对于这两种博文，均实现了文章转PDF的功能：  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.1 文章详情页  
    文章转PDF按钮的位置如下图所示：
-   ![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF01.png)  
+   ![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/2PDF01.png)  
    点击按钮即可调出转PDF，<B>第一次使用时记得在弹出窗口设置为另存为PDF，如果不想要页眉页脚，也请手动勾选</B>。  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.2 讨论回答  
    讨论回答页面的文章转DPF按钮的位置如下图所示：  
-   ![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF02.png) 
+   ![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/2PDF02.png) 
    先点击文章转PDF的蓝色按钮，所有的讨论就都会加上文章转PDF的标签，点击标签即可调起具体文章的转换功能。  
 #### 2. CSDN    
 文章转PDF按钮的位置如下图所示：
-![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF03.png)  
+![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/2PDF03.png)  
 #### 3. 博客园    
 博客园的网页排版有多种方式，针对每一种，本人都加了不影响美观的文章转PDF按钮。下面放几个示意图，如果用户打开的网页不是下面几种方式，可以据此类推：
-![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF04.png)
-![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF05.png)
-![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF06.png)
-![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF07.png)
-![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF08.png)
-![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF09.png)  
+![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/2PDF04.png)
+![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/2PDF05.png)
+![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/2PDF06.png)
+![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/2PDF07.png)
+![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/2PDF08.png)
+![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/2PDF09.png)  
 #### 4. 掘金    
 文章转PDF按钮的位置如下图所示：
-![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF10.png)  
+![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/2PDF10.png)  
 #### 5. 开源中国    
 开源中国的博文主要在两个地方：1.具体博客 2.问答    
 具体博客的文章转PDF按钮位置如下图所示：  
-![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF11.png)    
+![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/2PDF11.png)    
 问答的文章转PDF按钮位置如下图所示：  
-![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF14.png)  
+![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/2PDF14.png)  
 #### 6. 思否  
 文章转PDF按钮的位置如下图所示：
-![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF12.png)  
+![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/2PDF12.png)  
 #### 7. 简书  
 文章转PDF按钮的位置如下图所示：
-![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/2PDF13.png)   
+![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/2PDF13.png)   
 
 <span id="scriptuse">脚本安装</span>
 **1. 安装脚本管理器 Tampermonkey 或暴力猴**
@@ -79,8 +79,7 @@ sweet-WebJS/js/closeIDM.js实现的是关闭IDM强制在浏览器跳转到下载
 点击安装此脚本 [安装地址](https://greasyfork.org/zh-CN/scripts/421429) 
 ### 关于捐赠
 本脚本不收取任何使用费用 , 如果您觉得本脚本对您有帮助，您可以通过支付宝或微信，扫描二维码，捐赠 X元，^_^，谢谢！
-![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/zfb.jpg)
-![](https://cdn.jsdelivr.net/gh/doublesweet01/BS_script@master/image/weixin.jpg)
+![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/commendation.jpg)
 
 
    
