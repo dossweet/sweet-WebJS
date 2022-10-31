@@ -79,7 +79,7 @@ sweet-WebJS/js/closeIDM.js实现的是关闭IDM强制在浏览器跳转到下载
 点击安装此脚本 [安装地址](https://greasyfork.org/zh-CN/scripts/421429) 
 ### 关于捐赠
 本脚本不收取任何使用费用 , 如果您觉得本脚本对您有帮助，您可以通过支付宝或微信，扫描二维码，捐赠 X元，^_^，谢谢！
-![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/commendation.jpg)
+![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/commendation.png)
 
 
    
