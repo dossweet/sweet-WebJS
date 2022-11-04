@@ -3,7 +3,7 @@
 // @namespace    https://greasyfork.org/zh-CN/scripts/428697
 // @homepageURL  https://greasyfork.org/zh-CN/scripts/428697
 // @home-url1    https://github.com/dossweet/sweet-WebJS
-// @version      10.12
+// @version      10.13
 // @description  把知乎、CSDN、简书、博客园、开源中国、掘金、思否七大主流博客网站的文章部分另存为PDF，便于本地进行编辑。兼容chrome,firefox,edge浏览器，其余未测试
 // @author       dossweet
 // @include       https://zhuanlan.zhihu.com/p/*
@@ -23,6 +23,7 @@
 // @require     https://cdn.staticfile.org/jquery/1.9.1/jquery.min.js
 // @require     https://cdn.jsdelivr.net/npm/jQuery.print@1.5.1/jQuery.print.min.js
 // @require     https://code.jquery.com/jquery-migrate-1.2.1.min.js
+// @note        v10.13 优化知乎中公式重复出现问题逻辑
 // @note        v10.12 修复知乎中公式重复出现的问题
 // @note        v10.11 代码升级，采用更规范的写法 & 修复知乎公式打印失败的问题(较复杂) 1024程序员节快乐呀
 // @note        v10.10 修复博客园长图片打印失败的问题
@@ -572,6 +573,7 @@
                             case false:
                                 let el = document.getElementsByTagName('article')[0];
                                 specialPrint(el, 'article');
+                                break;
                         }
                     } else {
                         //表示是知乎讨论，知乎的讨论是采用懒加载的形式，每次增加五个
@@ -899,6 +901,8 @@
         printMain.setAttribute("id", "print-box");
         printMain.innerHTML = el.innerHTML;
         doc.body.appendChild(printMain);
+        // remove MathJax
+        removeMathJax(doc, "span[id^='MathJax-']");
         // load iframe page resource
         loadIframePageScript(doc);
         let allImg = doc.getElementsByTagName("img");
@@ -993,6 +997,13 @@
             if (dataSrc) {
                 allImg[i].src = dataSrc;
             }
+        }
+    }
+
+    function removeMathJax(document, dom){
+        let mathJaxs = document.querySelectorAll(dom);
+        for(let i = 0; i < mathJaxs.length; i++){
+            mathJaxs[i].parentNode.removeChild(mathJaxs[i]);
         }
     }
 
