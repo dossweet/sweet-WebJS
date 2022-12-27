@@ -76,7 +76,7 @@ sweet-WebJS/js/closeIDM.js实现的是关闭IDM强制在浏览器跳转到下载
 
 **2. 安装 网页文章转PDF(网页局部区域打印)-适用于知乎/CSDN/简书/博客园/开源中国/掘金/思否**
 
-点击安装此脚本 [安装地址](https://greasyfork.org/zh-CN/scripts/421429) 
+点击安装此脚本 [安装地址](https://greasyfork.org/zh-CN/scripts/428697) 
 ### 关于捐赠
 本脚本不收取任何使用费用 , 如果您觉得本脚本对您有帮助，您可以通过支付宝或微信，扫描二维码，捐赠 X元，^_^，谢谢！  
 ![](https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/commendation.png)
