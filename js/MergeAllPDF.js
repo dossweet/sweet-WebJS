@@ -3,7 +3,7 @@
 // @namespace    https://greasyfork.org/zh-CN/scripts/428697
 // @homepageURL  https://greasyfork.org/zh-CN/scripts/428697
 // @home-url1    https://github.com/dossweet/sweet-WebJS
-// @version      10.15
+// @version      10.16
 // @description  把知乎、CSDN、简书、博客园、开源中国、掘金、思否七大主流博客网站的文章部分另存为PDF，便于本地进行编辑。兼容chrome,firefox,edge浏览器，其余未测试
 // @author       dossweet
 // @include       https://zhuanlan.zhihu.com/p/*
@@ -20,9 +20,10 @@
 // @include      https://segmentfault.com/a/*
 // @run-at      document-idle
 // @icon        https://cdn.jsdelivr.net/gh/dossweet/sweet-WebJS@master/image/sweet.jpg
-// @require     https://cdn.staticfile.org/jquery/1.9.1/jquery.min.js
+// @require     https://cdn.jsdelivr.net/npm/jquery@1.9.1/jquery.min.js
 // @require     https://cdn.jsdelivr.net/npm/jQuery.print@1.5.1/jQuery.print.min.js
-// @require     https://code.jquery.com/jquery-migrate-1.2.1.min.js
+// @require     https://cdn.jsdelivr.net/npm/jquery-migrate@1.2.1/dist/jquery-migrate.min.js
+// @note        v10.16 调整外部依赖地址，兼容 GreasyFork 当前发布规则
 // @note        v10.15 继续优化代码结构，重构为更清晰的配置驱动模式
 // @note        v10.14 代码优化，提升脚本可维护性和稳定性
 // @note        v10.13 优化知乎中公式重复出现问题逻辑
