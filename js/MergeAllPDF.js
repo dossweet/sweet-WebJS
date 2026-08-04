@@ -47,11 +47,27 @@
 // ==/UserScript==
 (function () {
     'use strict';
+    const PAGE_TYPE = {
+        ZHIHU: 0,
+        CSDN: 1,
+        JIANSHU: 2,
+        CNBLOGS: 3,
+        JUEJIN: 4,
+        OSCHINA: 5,
+        SEGMENTFAULT: 6
+    };
+    const PRINT_OPTIONS = {
+        debug: false,
+        importCSS: true,
+        printContainer: true,
+        operaSupport: true
+    };
     let page2pdfClick = false;
     let listItemNumber = 0;
     let buttonClickCount = 0;
     let opeArray = [];
-    let hasAddStyle = false;
+    let dynamicStyleNodes = [];
+    let safeWaitTimer = null;
 
     let pageConfigure = {
         parentDiv: "",
@@ -61,7 +77,7 @@
         pageHref: "",
         ifNeedPageRedirect: false,
         currentPage: 0
-    }
+    };
     let pageHref = window.location.href;//获取网址
     if (pageHref.indexOf("www.zhihu.com/question/") != -1 && pageHref.indexOf("/answer/") != -1) {//表示是讨论回答,推荐回答页面
         pageConfigure.pageHref = pageHref;
@@ -124,7 +140,7 @@
         pageConfigure.currentPage = 6;//表示是思否
     }
 
-    if (pageConfigure.ifNeedPageRedirect == true) {
+    if (pageConfigure.ifNeedPageRedirect === true) {
         window.location.replace(pageConfigure.pageHref);
     }
 
@@ -134,9 +150,68 @@
         window.location.replace(pageHref);
     }
 
+    function appendElement(parent, element, beforeNode) {
+        if (!parent || !element) {
+            return;
+        }
+        if (beforeNode) {
+            parent.insertBefore(element, beforeNode);
+            return;
+        }
+        parent.appendChild(element);
+    }
+
+    function mountPrintEntry() {
+        switch (pageConfigure.currentPage) {
+            case PAGE_TYPE.ZHIHU:
+                appendElement(parentDiv, div, firstChild);
+                break;
+            case PAGE_TYPE.CSDN:
+            case PAGE_TYPE.JIANSHU:
+            case PAGE_TYPE.CNBLOGS:
+                appendElement(parentDiv, div);
+                break;
+            case PAGE_TYPE.JUEJIN:
+                appendElement(document.body, div);
+                appendElement(document.body, div4);
+                break;
+            case PAGE_TYPE.OSCHINA:
+                if (pageConfigure.pageHref.indexOf("blog") != -1) {
+                    appendElement(parentDiv, div);
+                } else if (pageConfigure.pageHref.indexOf("question") != -1) {
+                    appendElement(document.body, div1);
+                    appendElement(document.body, div5);
+                }
+                break;
+            case PAGE_TYPE.SEGMENTFAULT:
+                appendElement(document.body, div);
+                appendElement(document.body, div6);
+                break;
+            default:
+                break;
+        }
+    }
+
+    function runPrintFlow(beforePrint) {
+        if (typeof beforePrint === 'function') {
+            beforePrint();
+        }
+        transformPDF();
+    }
+
+    function printElement(selector) {
+        $(selector).print(PRINT_OPTIONS);
+    }
+
+    function clearDynamicStyles() {
+        while (dynamicStyleNodes.length > 0) {
+            removeStyle();
+        }
+    }
+
     // 关闭登录框
     function closeLogin() {
-        if (pageConfigure.currentPage == 0) {
+        if (pageConfigure.currentPage === PAGE_TYPE.ZHIHU) {
             let removeLoginModal = e => {
                 if (e.target.innerHTML && e.target.getElementsByClassName('Modal-wrapper').length > 0) {
                     if (e.target.getElementsByClassName('Modal-wrapper')[0].querySelector('.signFlowModal')) {
@@ -162,9 +237,9 @@
     let div6 = "";
 
     switch (pageConfigure.currentPage) {
-        case 0:
-        case 1:
-            if (pageConfigure.currentPage == 0) {
+        case PAGE_TYPE.ZHIHU:
+        case PAGE_TYPE.CSDN:
+            if (pageConfigure.currentPage === PAGE_TYPE.ZHIHU) {
                 firstChild = document.querySelector('.' + pageConfigure.firstChild);
             }
             parentDiv = document.querySelector('.' + pageConfigure.parentDiv);
@@ -175,14 +250,14 @@
                 '    </button>';
             div.className = "pagePrint";
             break;
-        case 2:
+        case PAGE_TYPE.JIANSHU:
             parentDiv = document.querySelector('.' + pageConfigure.parentDiv);
             div = document.createElement("button");
             div.innerHTML = '文章转PDF';
             div.className = "_1OyPqC _3Mi9q9 _1YbC5u printButton";
             div.type = "button";
             break;
-        case 3:
+        case PAGE_TYPE.CNBLOGS:
             parentDiv = document.querySelector('#' + pageConfigure.parentDiv);
             if (!parentDiv) {//博客园特殊的一个网页模板
                 parentDiv = document.getElementById("leftmenu").children[1];
@@ -193,7 +268,7 @@
                 '    </a>';
             div.id = "pagePrint";
             break;
-        case 4:
+        case PAGE_TYPE.JUEJIN:
             div = document.createElement("div");
             div.innerHTML =
                 '        <div class="pagePrint panel-btn">\n' +
@@ -207,7 +282,7 @@
                 '    <div class="tooltip-two">文章转PDF</div>';
             div4.className = "tooltips";
             break;
-        case 5:
+        case PAGE_TYPE.OSCHINA:
             if (pageConfigure.parentDiv.length > 0) {
                 parentDiv = document.querySelectorAll('.' + pageConfigure.parentDiv)[1];
                 div = document.createElement("div");
@@ -230,7 +305,7 @@
                 div5.className = "tooltips";
             }
             break;
-        case 6:
+        case PAGE_TYPE.SEGMENTFAULT:
             div = document.createElement("div");
             div.innerHTML =
                 '        <div class="pagePrint panel-btn">\n' +
@@ -261,8 +336,8 @@
     let scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
 
     switch (pageConfigure.currentPage) {
-        case 0:
-            parentDiv.insertBefore(div, firstChild);
+        case PAGE_TYPE.ZHIHU:
+            appendElement(parentDiv, div, firstChild);
             cssStyle = ".printButton {\n" +
                 "        background-color: #056de8;\n" +
                 "        color: white;\n" +
@@ -284,8 +359,8 @@
                 "        display: -webkit-inline-box;\n" +
                 "    }";
             break;
-        case 1:
-            parentDiv.appendChild(div);
+        case PAGE_TYPE.CSDN:
+            appendElement(parentDiv, div);
             cssStyle = ".printButton {\n" +
                 "        background-color: #ff4d4d;\n" +
                 "        color: white;\n" +
@@ -308,12 +383,12 @@
                 "        display: -webkit-inline-box;\n" +
                 "    }";
             break;
-        case 2:
-            parentDiv.appendChild(div);
+        case PAGE_TYPE.JIANSHU:
+            appendElement(parentDiv, div);
             cssStyle = "";
             break;
-        case 3:
-            parentDiv.appendChild(div);
+        case PAGE_TYPE.CNBLOGS:
+            appendElement(parentDiv, div);
             cssStyle = ".printButton {\n" +
                 "        background-color: #ff4d4d;\n" +
                 "        color: white;\n" +
@@ -336,9 +411,8 @@
                 "        display: -webkit-inline-box;\n" +
                 "    }";
             break;
-        case 4:
-            document.body.appendChild(div);
-            document.body.appendChild(div4);
+        case PAGE_TYPE.JUEJIN:
+            mountPrintEntry();
             object = document.getElementsByClassName("panel-btn")[0];
             if (object) {
                 pos = object.getBoundingClientRect();//参考坐标
@@ -400,10 +474,9 @@
                 "        margin-top: -5px;\n" +
                 "    }";
             break;
-        case 5:
+        case PAGE_TYPE.OSCHINA:
             if (pageConfigure.pageHref.indexOf("question") != -1) {
-                document.body.appendChild(div1);
-                document.body.appendChild(div5);
+                mountPrintEntry();
                 object = document.getElementsByClassName("codeBlock")[0];
                 objectIcon = document.getElementsByClassName("codeIcon")[0];
                 if (object) {
@@ -470,7 +543,7 @@
                     "        margin-top: -15px;\n" +
                     "    }";
             } else {
-                parentDiv.appendChild(div);
+                appendElement(parentDiv, div);
                 cssStyle =
                     "    #printLogo{\n" +
                     "        width:1.1em;\n" +
@@ -478,9 +551,8 @@
                     "    }\n";
             }
             break;
-        case 6:
-            document.body.appendChild(div);
-            document.body.appendChild(div6);
+        case PAGE_TYPE.SEGMENTFAULT:
+            mountPrintEntry();
             object = document.getElementsByClassName("dropdown")[2];
             if (object) {
                 pos = object.getBoundingClientRect();//参考坐标
@@ -552,9 +624,9 @@
     document.body.appendChild(cssNode);
 
     switch (pageConfigure.currentPage) {
-        case 3:
+        case PAGE_TYPE.CNBLOGS:
             $("#printButton").click(function () {
-                Promise.all([updateStyle()]).then(transformPDF);
+                runPrintFlow(updateStyle);
             });
             setTimeout(() => {
                 removeImgLazyLoading('#mainContent', 0);
@@ -562,13 +634,16 @@
             break;
         default:
             $(".printButton").click(function () {
-                if (pageConfigure.currentPage == 0) {
+                if (pageConfigure.currentPage === PAGE_TYPE.ZHIHU) {
                     if (pageConfigure.pageHref.indexOf("/p") != -1) {
                         let isFirefoxEnv = getBrowserUserAgent();
-                        switch (isFirefoxEnv){
+                        switch (isFirefoxEnv) {
                             case true:
                                 //先隐藏部分元素，然后打印。在打印完毕后再展示
-                                Promise.all([removeImgLazyLoading('.Post-Main', 0), updateStyle()]).then(transformPDF);
+                                runPrintFlow(() => {
+                                    removeImgLazyLoading('.Post-Main', 0);
+                                    updateStyle();
+                                });
                                 break;
                             case false:
                                 let el = document.getElementsByTagName('article')[0];
@@ -577,7 +652,7 @@
                         }
                     } else {
                         //表示是知乎讨论，知乎的讨论是采用懒加载的形式，每次增加五个
-                        if (page2pdfClick == false) {//第一次点击时所有讨论都加上文章转PDF的文字
+                        if (page2pdfClick === false) {//第一次点击时所有讨论都加上文章转PDF的文字
                             if (buttonClickCount > 0) {
                                 removeStyle();
                                 buttonClickCount--;
@@ -598,11 +673,11 @@
                             buttonClickCount++;
                         }
                     }
-                } else if (pageConfigure.currentPage == 1 || pageConfigure.currentPage == 4 || pageConfigure.currentPage == 5 || pageConfigure.currentPage == 6) {
-                    Promise.all([updateStyle()]).then(transformPDF);
-                } else if (pageConfigure.currentPage == 2) {
+                } else if (pageConfigure.currentPage === PAGE_TYPE.CSDN || pageConfigure.currentPage === PAGE_TYPE.JUEJIN || pageConfigure.currentPage === PAGE_TYPE.OSCHINA || pageConfigure.currentPage === PAGE_TYPE.SEGMENTFAULT) {
+                    runPrintFlow(updateStyle);
+                } else if (pageConfigure.currentPage === PAGE_TYPE.JIANSHU) {
                     createParentEle(".ouvJEz", 0);
-                    Promise.all([updateStyle()]).then(transformPDF);
+                    runPrintFlow(updateStyle);
                 }
             });
             break;
@@ -610,28 +685,28 @@
 
     function updateStyle() {
         switch (pageConfigure.currentPage) {
-            case 0:
+            case PAGE_TYPE.ZHIHU:
                 let parentDiv = $(".is-bottom")[0].parentElement;
                 parentDiv.className = "articleComment";
                 addStyle(".Post-Author{width:100%;}");
                 addStyle(".FollowButton,.Reward,.Post-topicsAndReviewer,.RichContent-action,.articleComment,.RichContent-actions,.ContentItem-actions,.LabelContainer-wrapper,.css-d5ulu0-CatalogContainer{display:none !important;}");
                 break;
-            case 1:
+            case PAGE_TYPE.CSDN:
                 addStyle(".article-type-img,.blog-tags-box,.slide-content-box,.operating,#blog_detail_zk_collection,.article-heard-img,.read-count,#csdn-shop-window-top,#blogColumnPayAdvert{display:none !important;}\n");
                 addStyle(".article-header-box,.baidu_pl{width:90% !important;}");
                 break;
-            case 2:
+            case PAGE_TYPE.JIANSHU:
                 addStyle("._3tCVn5,._1kCBjS,._19DgIp,._13lIbp,.d0hShY{display:none !important;}");
                 addStyle(".rEsl9f{margin-bottom:5px;}");
                 break;
-            case 3:
+            case PAGE_TYPE.CNBLOGS:
                 addStyle(".postDesc,#blog_post_info_block,#comment_form{display:none !important;}");
                 break;
-            case 4:
+            case PAGE_TYPE.JUEJIN:
                 addStyle(".tag-list-box,.extension-banner,.follow-button{display:none !important;}");
                 addStyle(".author-info-block{margin-bottom:0rem !important;}");
                 break;
-            case 5:
+            case PAGE_TYPE.OSCHINA:
                 if (pageConfigure.pageHref.indexOf("blog") != -1) {
                     addStyle(".article-box__group,.tags-box,.copyright-box,.action-box,.recommend-box,.comment-box{display:none !important;}");
                     addStyle(".article-box__meta,.item-list{display:inline-flex;}");
@@ -640,7 +715,7 @@
                     addStyle(".tags,.poll-wrap,.additional-remarks,.segment{display:none !important;}");
                 }
                 break;
-            case 6:
+            case PAGE_TYPE.SEGMENTFAULT:
                 addStyle(".functional-area-bottom,.flex-sm-row,.pt-4 align-items-center row{display:none !important;}");
                 break;
             default:
@@ -650,6 +725,9 @@
 
     function removeImgLazyLoading(parentDom, index) {
         let parentDiv = document.querySelectorAll(parentDom)[index];
+        if (!parentDiv) {
+            return;
+        }
         let img = parentDiv.getElementsByTagName('img');
         for (let i = 0; i < img.length; i++) {
             img[i].removeAttribute('loading');
@@ -660,98 +738,56 @@
     // 文章转pdf
     function transformPDF() {
         switch (pageConfigure.currentPage) {
-            case 0:
-                $(".Post-Main").print({
-                    debug: false,
-                    importCSS: true,
-                    printContainer: true,
-                    operaSupport: true
-                });
+            case PAGE_TYPE.ZHIHU:
+                printElement(".Post-Main");
                 break;
-            case 1:
-                $(".blog-content-box").print({
-                    debug: false,
-                    importCSS: true,
-                    printContainer: true,
-                    operaSupport: true
-                });
+            case PAGE_TYPE.CSDN:
+                printElement(".blog-content-box");
                 break;
-            case 2:
-                $("#jsPrint").print({
-                    debug: false,
-                    importCSS: true,
-                    printContainer: true,
-                    operaSupport: true
-                });
+            case PAGE_TYPE.JIANSHU:
+                printElement("#jsPrint");
                 break;
-            case 3:
-                $("#post_detail").print({
-                    debug: false,
-                    importCSS: true,
-                    printContainer: true,
-                    operaSupport: true
-                });
+            case PAGE_TYPE.CNBLOGS:
+                printElement("#post_detail");
                 break;
-            case 4:
-                $(".article").print({
-                    debug: false,
-                    importCSS: true,
-                    printContainer: true,
-                    operaSupport: true
-                });
+            case PAGE_TYPE.JUEJIN:
+                printElement(".article");
                 break;
-            case 5:
+            case PAGE_TYPE.OSCHINA:
                 if (pageConfigure.pageHref.indexOf("blog") != -1) {
-                    $(".article-box").print({
-                        debug: false,
-                        importCSS: true,
-                        printContainer: true,
-                        operaSupport: true
-                    });
+                    printElement(".article-box");
                 } else if (pageConfigure.pageHref.indexOf("question") != -1) {
-                    $(".article-detail").print({
-                        debug: false,
-                        importCSS: true,
-                        printContainer: true,
-                        operaSupport: true
-                    });
+                    printElement(".article-detail");
                 }
                 break;
-            case 6:
-                $(".card-body").print({
-                    debug: false,
-                    importCSS: true,
-                    printContainer: true,
-                    operaSupport: true
-                });
+            case PAGE_TYPE.SEGMENTFAULT:
+                printElement(".card-body");
                 break;
         }
 
-        if (pageConfigure.currentPage == 0 || pageConfigure.currentPage == 1 || pageConfigure.currentPage == 2 || pageConfigure.currentPage == 4) {//csdn特殊处理，需要两次removeStyle
-            removeStyle();
-            removeStyle();
-        } else if (pageConfigure.currentPage == 5 && pageConfigure.pageHref.indexOf("blog") != -1) {
-            removeStyle();
-            removeStyle();
-            removeStyle();
-        } else if (hasAddStyle == true) {
-            removeStyle();
-        }
+        clearDynamicStyles();
         safeWaitFunctionTT();
     }
 
     // 新增样式，去除局部打印区域中不要的元素
     function addStyle(style) {
         let newStyle = document.getElementById("THT_Style");
-        newStyle.appendChild(document.createTextNode(style));
-        hasAddStyle = true;
+        if (!newStyle || !style) {
+            return;
+        }
+        let textNode = document.createTextNode(style);
+        newStyle.appendChild(textNode);
+        dynamicStyleNodes.push(textNode);
     }
 
     // 恢复样式
     function removeStyle() {
         let newStyle = document.getElementById("THT_Style");
-        newStyle.removeChild(newStyle.lastChild);
-        hasAddStyle = false;
+        let lastStyleNode = dynamicStyleNodes.pop();
+        if (!newStyle || !lastStyleNode || lastStyleNode.parentNode !== newStyle) {
+            return;
+        }
+        newStyle.removeChild(lastStyleNode);
     }
 
     //为现有节点添加新的父元素，便于操作当前节点
@@ -759,9 +795,9 @@
         let printDiv = $(currentNode)[newParentIndex];
         let parentNew = document.createElement("div");
         let parentID = "";
-        if (pageConfigure.currentPage == 0) {
+        if (pageConfigure.currentPage === PAGE_TYPE.ZHIHU) {
             parentID = 'newParentIndex' + newParentIndex;
-        } else if (pageConfigure.currentPage == 2) {
+        } else if (pageConfigure.currentPage === PAGE_TYPE.JIANSHU) {
             parentID = 'jsPrint';
         }
         parentNew.id = parentID;
@@ -791,7 +827,7 @@
     }
 
     function hoverEvent() {
-        if (pageConfigure.currentPage == 4 || pageConfigure.currentPage == 6) {
+        if (pageConfigure.currentPage === PAGE_TYPE.JUEJIN || pageConfigure.currentPage === PAGE_TYPE.SEGMENTFAULT) {
             $(".printButton").hover(function () {
                 $(".tooltips").show(100);
             }, function () {
@@ -808,12 +844,12 @@
 
     function eventListener() {//归纳所有的事件监听到一个函数
         switch (pageConfigure.currentPage) {
-            case 0:
+            case PAGE_TYPE.ZHIHU:
                 document.addEventListener('DOMNodeInserted', function () {//添加监听事件，检测是否发生懒加载
                     let listItemLength = document.getElementsByClassName('List-item').length;
                     if (opeArray.length == 0 || opeArray.includes(listItemLength) == false) {
                         opeArray.push(listItemLength);
-                        if (page2pdfClick == true) {
+                        if (page2pdfClick === true) {
                             addPrintText();
                         }
                     }
@@ -863,12 +899,7 @@
         let isFirefoxEnv = getBrowserUserAgent();
         switch (isFirefoxEnv) {
             case true:
-                $("#" + parentID).print({
-                    debug: false,
-                    importCSS: true,
-                    printContainer: true,
-                    operaSupport: true
-                });
+                printElement("#" + parentID);
                 break;
             case false:
                 // 等待DOM节点挂载成功后，再执行打印操作
@@ -883,6 +914,9 @@
 
     // 特殊打印，针对知乎文章里公式打印失败的问题
     function specialPrint(el, pageType) {
+        if (!el) {
+            return;
+        }
         // 创建iframe
         let iframe = document.createElement("iframe");
         // 设置iframe样式
@@ -909,7 +943,8 @@
         // add iframe style
         addIframeStyle(doc, pageType);
         loadImgWithoutLazyLoading(doc, allImg);
-        allImg[allImg.length - 1].onload = function () {
+
+        function printIframe() {
             setTimeout(() => {
                 // remove same dom
                 removeSameDom(doc, "span[id^='MathJax-']");
@@ -923,6 +958,13 @@
                 document.body.removeChild(iframe);
             }, 3000);
         }
+
+        if (allImg.length === 0) {
+            printIframe();
+            return;
+        }
+
+        allImg[allImg.length - 1].onload = printIframe;
     }
 
     function loadIframePageHead(doc) {
@@ -947,12 +989,14 @@
         let js_clientConfig_script = document.getElementById('js-clientConfig');
         let js_initialData_script = document.getElementById('js-initialData');
         if (js_clientConfig_script) {
-            js_clientConfig_script.setAttribute("nonce", "");
-            doc.body.append(js_clientConfig_script);
+            let configScriptClone = js_clientConfig_script.cloneNode(true);
+            configScriptClone.setAttribute("nonce", "");
+            doc.body.append(configScriptClone);
         }
         if (js_initialData_script) {
-            js_initialData_script.setAttribute("nonce", "");
-            doc.body.append(js_initialData_script);
+            let initialDataScriptClone = js_initialData_script.cloneNode(true);
+            initialDataScriptClone.setAttribute("nonce", "");
+            doc.body.append(initialDataScriptClone);
         }
 
         // 在iframe中插入script
@@ -977,7 +1021,6 @@
 
     function addIframeStyle(doc, pageType) {
         let domStyle = document.createElement('style');
-        domStyle.type = 'text/css';
         switch (pageType) {
             case 'answer':
                 domStyle.innerHTML = '.css-1vse7nz{display:flex;}\n .ContentItem-actions,.RichText-ADLinkCardContainer,.RichText-MCNLinkCardContainer,.Reward{display: none;}';
@@ -989,7 +1032,7 @@
         doc.getElementsByTagName('head')[0].appendChild(domStyle);
     }
 
-    function loadImgWithoutLazyLoading(iframeDocument, allImg) {
+    function loadImgWithoutLazyLoading(allImg) {
         for (let i = 0; i < allImg.length; i++) {
             allImg[i].removeAttribute('loading');
             allImg[i].removeAttribute('data-lazy-status');
@@ -1000,17 +1043,17 @@
         }
     }
 
-    function removeMathJax(document, dom){
+    function removeMathJax(document, dom) {
         let mathJaxs = document.querySelectorAll(dom);
-        for(let i = 0; i < mathJaxs.length; i++){
+        for (let i = 0; i < mathJaxs.length; i++) {
             mathJaxs[i].parentNode.removeChild(mathJaxs[i]);
         }
     }
 
-    function removeSameDom(document, dom){
+    function removeSameDom(document, dom) {
         let mathJaxs = document.querySelectorAll(dom);
-        for(let i = 1; i < mathJaxs.length; i++){
-            if(mathJaxs[i].id === mathJaxs[i - 1].id){
+        for (let i = 1; i < mathJaxs.length; i++) {
+            if (mathJaxs[i].id === mathJaxs[i - 1].id) {
                 mathJaxs[i].parentNode.removeChild(mathJaxs[i]);
             }
         }
@@ -1018,57 +1061,37 @@
 
     //修改博客园导航栏的宽度
     function updateNavWidth() {
-        if (pageConfigure.currentPage == 3) {
+        if (pageConfigure.currentPage === PAGE_TYPE.CNBLOGS) {
             let a = document.getElementById("pagePrint");
+            if (!a) {
+                return;
+            }
             let width = getComputedStyle(a).width.replace("px", "");
             let fontSize = getComputedStyle(a).fontSize.replace("px", "");
             if (fontSize >= 14 && fontSize * 6 > width) {
-                let newCss = "\n#pagePrint{width:" + fontSize * 7.5 + "px !important;}\n"
-                addStyle(newCss);
+                let newCss = "\n#pagePrint{width:" + fontSize * 7.5 + "px !important;}\n";
+                let styleNode = document.getElementById("THT_Style");
+                styleNode.appendChild(document.createTextNode(newCss));
             }
         }
     }
 
     // 判断浏览器的环境
-    function getBrowserUserAgent(){
-        let userAgent = navigator.userAgent;
-        // 代表是火狐
-        if(/firefox/i.test(userAgent)){
-            return true;
-        }
-        return false;
+    function getBrowserUserAgent() {
+        return /firefox/i.test(navigator.userAgent);
     }
 
     //写一个周期函数，检测文章转pdf的按钮有没有加上
     function safeWaitFunctionTT() {
-        setInterval(function () {
+        if (safeWaitTimer) {
+            clearInterval(safeWaitTimer);
+        }
+        safeWaitTimer = setInterval(function () {
             let a = document.getElementsByClassName("printButton");
             if (a.length == 0) {
-                switch (pageConfigure.currentPage) {
-                    case 0:
-                        parentDiv.insertBefore(div, firstChild);
-                        break;
-                    case 1:
-                    case 2:
-                    case 3:
-                        parentDiv.appendChild(div);
-                        break;
-                    case 4:
-                        document.body.appendChild(div4);
-                        break;
-                    case 5:
-                        if (pageConfigure.pageHref.indexOf("blog") != -1) {
-                            document.body.appendChild(div);
-                        } else if (pageConfigure.pageHref.indexOf("question") != -1) {
-                            document.body.appendChild(div1);
-                            document.body.appendChild(div5);
-                        }
-                        break;
-                    case 6:
-                        document.body.appendChild(div6);
-                        break;
-                }
-                clearInterval();
+                mountPrintEntry();
+                clearInterval(safeWaitTimer);
+                safeWaitTimer = null;
             }
         }, 500);
     }
